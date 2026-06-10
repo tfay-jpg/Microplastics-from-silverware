@@ -1,425 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Microplastic Exposure Dynamics Model</title>
-    <style>
-        :root {
-            --primary: #1a365d;
-            --primary-light: #2b6cb0;
-            --accent: #3182ce;
-            --success: #2f855a;
-            --success-light: #48bb78;
- --bg: #f7fafc;
-            --card-bg: #ffffff;
-            --text: #2d3748;
-            --border: #e2e8f0;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: var(--bg);
-            margin: 0;
-            padding: 24px;
-        }
-        .wrapper {
-            max-width: 1050px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            padding: 35px;
-            border-radius: 12px;
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-        }
-        header {
-            border-bottom: 3px solid var(--border);
-            padding-bottom: 15px;
-            margin-bottom: 25px;
-        }
-        h1 {
-            color: var(--primary);
-            margin: 0 0 8px 0;
-            font-size: 1.8rem;
-        }
-        .subtitle {
-            color: #4a5568;
-            margin: 0;
-            font-size: 0.95rem;
-        }
-        .layout-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 35px;
-        }
-        @media (max-width: 850px) {
-            .layout-grid { grid-template-columns: 1fr; }
-        }
-        .panel-title {
-            font-size: 1.15rem;
-            color: var(--primary-light);
-            margin: 25px 0 15px 0;
-            border-left: 4px solid var(--accent);
-           padding-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 700;
-        }
-        .panel-title:first-of-type { margin-top: 0; }
-        
-        .panel-title.intervention {
-            color: var(--success);
-            border-left-color: var(--success-light);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Microplastic Exposure Dynamics Model</title>
+<style>
+:root {
+--primary: #1a365d;
+--primary-light: #2b6cb0;
+--accent: #3182ce;
+--success: #2f855a;
+--success-light: #48bb78;
+--bg: #f7fafc;
+--card-bg: #ffffff;
+--text: #2d3748;
+--border: #e2e8f0;
+}
+body {
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+line-height: 1.6;
+color: var(--text);
+background-color: var(--bg);
+margin: 0;
+padding: 24px;
+}
+.wrapper {
+max-width: 900px;
+margin: 0 auto;
+background: var(--card-bg);
+padding: 35px;
+border-radius: 12px;
+box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+}
+header {
+border-bottom: 3px solid var(--border);
+padding-bottom: 15px;
+margin-bottom: 25px;
+}
+h1 {
+color: var(--primary);
+margin: 0 0 8px 0;
+font-size: 1.8rem;
+}
+.subtitle {
+color: #4a5568;
+margin: 0;
+font-size: 0.95rem;
+}
+.layout-grid {
+display: grid;
+grid-template-columns: 1.1fr 1fr;
+gap: 35px;
+}
+@media (max-width: 850px) {
+.layout-grid { grid-template-columns: 1fr; }
+}
+.panel-title {
+font-size: 1.15rem;
+color: var(--primary-light);
+margin: 25px 0 15px 0;
+border-left: 4px solid var(--accent);
+padding-left: 10px;
+text-transform: uppercase;
+letter-spacing: 0.5px;
+font-weight: 700;
+}
+.panel-title:first-of-type { margin-top: 0; }
 
-        .control-block {
-            margin-bottom: 20px;
-            background: #f8fafc;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-        }
-        label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.9rem;
-        }
-        .slider-row {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        input[type="range"] {
-            flex-grow: 1;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-        .numeric-box {
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Courier, monospace;
-            font-size: 0.95rem;
-            font-weight: bold;
-            background: #edf2f7;
-            padding: 4px 10px;
-            border-radius: 4px;
-            min-width: 75px;
-            text-align: right;
-            color: var(--primary);
-        }
-        
-        /* Intervention Strategy Buttons */
-        .btn-group {
-        display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            background: #f0fff4;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #c6f6d5;
-        }
-        .btn-group button {
-            padding: 10px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            border: 1px solid #b2f5ea;
-            border-radius: 6px;
-            background: #ffffff;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #2c5282;
-        }
-        .btn-group button:hover {
-            background: #ebf8ff;
-            border-color: #bee3f8;
-        }
-        .btn-group button.active-btn {
-            background: var(--success);
-            color: white;
-            border-color: var(--success);
-        }
+.panel-title.intervention {
+color: var(--success);
+border-left-color: var(--success-light);
+}
 
-        .display-card {
-            background: #f8fafc;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 24px;
-            position: sticky;
-            top: 24px;
-        }
-        .metric-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .metric-row:last-of-type {
-            border-bottom: none;
-            background: #ebf8ff;
-            margin-top: 15px;
-            padding: 16px 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            border: 1px solid #bee3f8;
-        }
-        .tier-name {
-            font-weight: 500;
-            font-size: 0.95rem;
-        }
-        .tier-output {
-            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Courier, monospace;
-            font-size: 1.2rem;
-            color: var(--primary-light);
-            font-weight: 800;
-        }
-        .info-pane {
-            margin-top: 20px;
-            background: #fffaf0;
-            border: 1px solid #feebc8;
-            padding: 15px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: #744210;
-        }
-        .info-pane ul {
-            margin: 5px 0 0 0;
-           padding-left: 20px;
-        }
-    </style>
-</head>
-<body>
+.control-block {
+margin-bottom: 20px;
+background: #f8fafc;
+padding: 12px 16px;
+border-radius: 8px;
+border: 1px solid var(--border);
+}
+label {
+display: block;
+font-weight: 600;
+margin-bottom: 6px;
+font-size: 0.9rem;
+}
+.slider-row {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+input[type="range"] {
+flex-grow: 1;
+accent-color: var(--accent);
+cursor: pointer;
+}
+.numeric-box {
+font-family: "SFMono-Regular", Consolas, "Liberation Mono", Courier, monospace;
+font-size: 0.95rem;
+font-weight: bold;
+background: #edf2f7;
+padding: 4px 10px;
+border-radius: 4px;
+min-width: 75px;
+text-align: right;
+color: var(--primary);
+}
 
-<div class="wrapper">
-    <header>
-        <h1>School Microplastic Exposure Dynamics Model</h1>
-        <div class="subtitle">An Empirical Integration of Campus Procurement Data, Behavioral Stratification, and Intervention Analyses</div>
-    </header>
-
-    <div class="layout-grid">
-        <div>
-            <div class="panel-title intervention">Solution Simulator (Wooden Shift)</div>
-            <div class="btn-group">
-                <button id="btnReset" class="active-btn" onclick="applyPreset(1.0, 'btnReset')">Baseline (100% Plastic)</button>
-                <button id="btnWood25" onclick="applyPreset(0.75, 'btnWood25')">Replace 25% with Wood</button>
-                <button id="btnWood50" onclick="applyPreset(0.50, 'btnWood50')">Replace 50% with Wood</button>
-                <button id="btnWood100" onclick="applyPreset(0.0, 'btnWood100')">Replace 100% (Total Ban)</button>
-            </div>
-
-            <div class="panel-title">1. Adjustable School Inventory Profiles</div>
-            
-            <div class="control-block">
-                <label for="forkInput">Annual Fork Procurement Volume:</label>
-                <div class="slider-row">
-                    <input type="range" id="forkInput" min="0" max="300000" step="2880" value="141120">
-                    <span class="numeric-box" id="forkDisp">141,120</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="spoonInput">Annual Spoon Procurement Volume:</label>
-                <div class="slider-row">
-                    <input type="range" id="spoonInput" min="0" max="150000" step="1440" value="60480">
-                    <span class="numeric-box" id="spoonDisp">60,480</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="knifeInput">Annual Knife Procurement Volume:</label>
-                <div class="slider-row">
-                    <input type="range" id="knifeInput" min="0" max="100000" step="720" value="23040">
-                    <span class="numeric-box" id="knifeDisp">23,040</span>
-                </div>
-            </div>
-
-            <div class="panel-title">2. Lab Multipliers (Literature Defaults)</div>
-
-            <div class="control-block">
-                <label for="sbInput">Baseline Shedding Capacity (S<sub>b</sub>):</label>
-                <div class="slider-row">
-                    <input type="range" id="sbInput" min="0" max="500" step="5" value="100">
-                    <span class="numeric-box" id="sbDisp">100</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="hfInput">Fork Thermal Acceleration Index (H<sub>F</sub>):</label>
-                <div class="slider-row">
-                    <input type="range" id="hfInput" min="1.0" max="4.0" step="0.1" value="2.0">
-                    <span class="numeric-box" id="hfDisp">2.0</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="hsInput">Spoon Thermal Acceleration Index (H<sub>S</sub>):</label>
-                <div class="slider-row">
-                    <input type="range" id="hsInput" min="1.0" max="4.0" step="0.1" value="3.0">
-                    <span class="numeric-box" id="hsDisp">3.0</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="mfInput">Fork Mechanical Friction Coefficient (M<sub>F</sub>):</label>
-                <div class="slider-row">
-                    <input type="range" id="mfInput" min="1.0" max="2.5" step="0.1" value="1.2">
-                    <span class="numeric-box" id="mfDisp">1.2</span>
-                </div>
-            </div>
-
-            <div class="control-block">
-                <label for="hkInput">Knife Thermal Acceleration Index (H<sub>K</sub>):</label>
-                <div class="slider-row">
-                    <input type="range" id="hkInput" min="1.0" max="3.0" step="0.1" value="1.2">
-                    <span class="numeric-box" id="hkDisp">1.2</span>
-                </div>
-            </div>
-        </div>
-
-        <div>
-            <div class="panel-title">3. Longitudinal Exposure Vectors</div>
-            <div class="display-card">
-                <div class="metric-row">
-                    <span class="tier-name">Tier 0 (Never Uses)</span>
-                    <span class="tier-output" id="outT0">0</span>
-                </div>
-                <div class="metric-row">
-                    <span class="tier-name">Tier 1 (Low Use: 1.5 days/wk)</span>
-                    <span class="tier-output" id="outT1">0</span>
-                </div>
-                <div class="metric-row">
-                    <span class="tier-name">Tier 2 (Medium Use: 3.0 days/wk)</span>
-                    <span class="tier-output" id="outT2">0</span>
-                </div>
-                <div class="metric-row">
-                    <span class="tier-name">Tier 3 (High Use: 5.0 days/wk)</span>
-                    <span class="tier-output" id="outT3">0</span>
-                </div>
-                <div class="metric-row">
-                    <span class="tier-name">Average Campus Student & Faculty</span>
-                    <span class="tier-output" id="outAvg">0</span>
-                </div>
-
-                <div class="info-pane">
-                    <strong>Model Mechanics & Interventions:</strong>
-                    <ul>
-                        <li>Using wood replaces plastic source volumes linearly ($P$).</li>
-                        <li><strong>Campus Base:</strong> 82,213.3 user-days/year ($N=1068$).</li>
-                        <li><strong>M<sub>S</sub> (Spoon Friction):</strong> 1.0 | <strong>M<sub>K</sub> (Knife Friction):</strong> 1.745</li>
-                        <li>Manual slider adjustments will override preset highlights.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Constants from original user data
-    const DT_CONSTANT = 82213.3;
-    const WEEKS_YEAR = 36;
-    const M_SPOON = 1.0;
-    const M_KNIFE = 1.745;
-
-    const BASE_FORKS = 141120;
-    const BASE_SPOONS = 60480;
-    const BASE_KNIVES = 23040;
-
-    // Document elements
-    const forkInput = document.getElementById('forkInput');
-    const spoonInput = document.getElementById('spoonInput');
-    const knifeInput = document.getElementById('knifeInput');
-    const sbInput = document.getElementById('sbInput');
-    const hfInput = document.getElementById('hfInput');
-    const hsInput = document.getElementById('hsInput');
-    const mfInput = document.getElementById('mfInput');
-    const hkInput = document.getElementById('hkInput');
-
-    const forkDisp = document.getElementById('forkDisp');
-    const spoonDisp = document.getElementById('spoonDisp');
-    const knifeDisp = document.getElementById('knifeDisp');
-    const sbDisp = document.getElementById('sbDisp');
-    const hfDisp = document.getElementById('hfDisp');
-    const hsDisp = document.getElementById('hsDisp');
-    const mfDisp = document.getElementById('mfDisp');
-    const hkDisp = document.getElementById('hkDisp');
-
-    const outT0 = document.getElementById('outT0');
-    const outT1 = document.getElementById('outT1');
-    const outT2 = document.getElementById('outT2');
-    const outT3 = document.getElementById('outT3');
-    const outAvg = document.getElementById('outAvg');
-
-    // Handles rapid conversion of baseline numbers when preset buttons are used
-    function applyPreset(multiplier, clickedBtnId) {
-        forkInput.value = Math.round(BASE_FORKS * multiplier);
-        spoonInput.value = Math.round(BASE_SPOONS * multiplier);
-        knifeInput.value = Math.round(BASE_KNIVES * multiplier);
-        
-        // Update button visual states
-        const buttons = ['btnReset', 'btnWood25', 'btnWood50', 'btnWood100'];
-        buttons.forEach(id => {
-            document.getElementById(id).classList.remove('active-btn');
-        });
-        document.getElementById(clickedBtnId).classList.add('active-btn');
-        
-        updateCalculations();
-    }
-
-    // Clear active highlight if user manually tweaks sliders away from preset values
-    function breakPresetHighlight() {
-        const buttons = ['btnReset', 'btnWood25', 'btnWood50', 'btnWood100'];
-        buttons.forEach(id => {
-            document.getElementById(id).classList.remove('active-btn');
-        });
-    }
-
-    function updateCalculations() {
-        const PF = parseFloat(forkInput.value);
-        const PS = parseFloat(spoonInput.value);
-        const PK = parseFloat(knifeInput.value);
-        const SB = parseFloat(sbInput.value);
-        const HF = parseFloat(hfInput.value);
-        const HS = parseFloat(hsInput.value);
-        const MF = parseFloat(mfInput.value);
-        const HK = parseFloat(hkInput.value);
-
-        forkDisp.innerText = PF.toLocaleString();
-        spoonDisp.innerText = PS.toLocaleString();
-        knifeDisp.innerText = PK.toLocaleString();
-        sbDisp.innerText = SB;
-        hfDisp.innerText = HF.toFixed(1);
-        hsDisp.innerText = HS.toFixed(1);
-        mfDisp.innerText = MF.toFixed(1);
-        hkDisp.innerText = HK.toFixed(1);
-
-        // Compute net microplastic particles shed daily per active user
-        const forkContribution  = (PF / DT_CONSTANT) * SB * HF * MF;
-        const spoonContribution = (PS / DT_CONSTANT) * SB * HS * M_SPOON;
-        const knifeContribution = (PK / DT_CONSTANT) * SB * HK * M_KNIFE;
-        const netDailyExposure  = forkContribution + spoonContribution + knifeContribution;
-
-        // Populate the longitudinal vectors
-        outT0.innerText = "0 particles/yr";
-        outT1.innerText = Math.round(1.5 * WEEKS_YEAR * netDailyExposure).toLocaleString() + " particles/yr";
-        outT2.innerText = Math.round(3.0 * WEEKS_YEAR * netDailyExposure).toLocaleString() + " particles/yr";
-        outT3.innerText = Math.round(5.0 * WEEKS_YEAR * netDailyExposure).toLocaleString() + " particles/yr";
-        outAvg.innerText = Math.round(2.138 * WEEKS_YEAR * netDailyExposure).toLocaleString() + " particles/yr";
-    }
-
-    // Attach input triggers
-    const inventorySliders = [forkInput, spoonInput, knifeInput];
-    inventorySliders.forEach(slider => {
-        slider.addEventListener('input', () => {
-            breakPresetHighlight();
-            updateCalculations();
-        });
-    });
-
-    const standardSliders = [sbInput, hfInput, hsInput, mfInput, hkInput];
-    standardSliders.forEach(slider => slider.addEventListener('input', updateCalculations));
-
-    // Initialize display on startup
-    updateCalculations();
-</script>
-
-</body>
-</html>
+/* Intervention Strategy Buttons */
+.btn-group {
+display: grid;
+grid-template-columns: repeat(2, 1fr);
+gap: 10px;
+background: #f0fff4;
+padding: 15px;
+border-radius: 8px;
+border: 1px solid #c6f6d5;
+}
+.btn-group button {
+padding: 10px;
+font-weight: 600;
+font-size: 0.85rem;
+border: 1px solid #b2f5ea;
+border-radius: 6px;
+background: #ffffff;
+cursor: pointer;
+transition: all 0.2s ease;
+color: #2c5282;
+}
+.btn-group button:hover {
+background: #ebf8ff;
+border-color: #bee3f8;
+}
+.btn-group button.active-btn {
+background: var(--
